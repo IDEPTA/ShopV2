@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\ProductRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource]
 class Product
 {
@@ -35,7 +36,7 @@ class Product
     private ?array $images = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Category $category = null;
 
     #[ORM\Column]
@@ -43,6 +44,23 @@ class Product
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
+
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $now = new \DateTimeImmutable();
+        if (!isset($this->created_at)) {
+            $this->created_at = $now;
+            $this->updated_at = $now;
+        }
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updated_at = new \DateTimeImmutable(); // Обновляем дату при изменении
+    }
 
     public function getId(): ?int
     {
@@ -121,12 +139,12 @@ class Product
         return $this;
     }
 
-    public function getCategoey(): ?Category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategoey(?Category $category): static
+    public function setCategory(?Category $category): static
     {
         $this->category = $category;
 
