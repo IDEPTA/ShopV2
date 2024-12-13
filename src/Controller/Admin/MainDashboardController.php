@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Controller\Admin\CRUDs\ProductCrudController;
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Review;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -37,6 +39,8 @@ class MainDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Управление продуктами');
+        yield MenuItem::linkToCrud('Пользователи', 'fa fa-user', User::class);
+        yield MenuItem::linkToCrud('Отзывы', 'fa fa-comment', Review::class);
         yield MenuItem::linkToCrud('Продукты', 'fa fa-box', Product::class);
         yield MenuItem::linkToCrud('Категория', 'fa fa-list', Category::class);
     }
