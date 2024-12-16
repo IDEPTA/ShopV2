@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CategoryRepository;
-use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource]
 class Category
@@ -23,6 +25,22 @@ class Category
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $now = new \DateTimeImmutable();
+        if (!isset($this->created_at)) {
+            $this->created_at = $now;
+            $this->updated_at = $now;
+        }
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updated_at = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -63,5 +81,10 @@ class Category
         $this->updated_at = $updated_at;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
