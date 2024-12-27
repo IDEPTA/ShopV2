@@ -5,10 +5,14 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReviewRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
 class Review
 {
     #[ORM\Id]
@@ -16,9 +20,19 @@ class Review
     #[ORM\Column]
     private ?int $id = null;
 
+    #[NotBlank(message: "Оценка не может быть пустой.")]
+    #[Type(type: 'numeric', message: "Оценка должна быть числом")]
+    #[Range(min: 1, max: 100, notInRangeMessage: "Оценка должна быть от 1 до 100.")]
     #[ORM\Column]
     private ?int $grade = null;
 
+    #[Type(type: 'string', message: "Комментарий должен быть строкой")]
+    #[Length(
+        max: 255,
+        min: 3,
+        minMessage: "Комментарий должен содержать минимум 3 символа",
+        maxMessage: "Комментарий не должен превышать 255 символов"
+    )]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $comment = null;
 
