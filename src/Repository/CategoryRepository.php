@@ -42,8 +42,10 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function create(Request $request)
     {
+        $data = json_decode($request->getContent(), true);
+
         $category = new Category();
-        $category->setName($request->get('name'));
+        $category->setName($data['name']);
         $errors = $this->validator->validate($category);
 
         if (count($errors) > 0) {
@@ -58,8 +60,9 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function update(Request $request, int $id)
     {
+        $data = json_decode($request->getContent(), true);
         $category = $this->show($id);
-        $category->setName($request->toArray()['name']);
+        $category->setName($data['name']);
         $errors = $this->validator->validate($category);
 
         if (count($errors) > 0) {
