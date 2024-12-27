@@ -4,24 +4,33 @@ namespace App\Repository;
 
 use Exception;
 use App\Entity\Category;
+use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
+use Monolog\Attribute\WithMonologChannel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * @extends ServiceEntityRepository<Category>
  */
+#[WithMonologChannel('category')]
 class CategoryRepository extends ServiceEntityRepository
 {
     private $validator;
     private $entityManager;
-    public function __construct(ManagerRegistry $registry, ValidatorInterface $validator, EntityManagerInterface $entityManager)
-    {
+    private $logger;
+    public function __construct(
+        ManagerRegistry $registry,
+        ValidatorInterface $validator,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ) {
         $this->validator = $validator;
         $this->entityManager = $entityManager;
+        $this->logger = $logger;
         parent::__construct($registry, Category::class);
     }
 
@@ -55,6 +64,7 @@ class CategoryRepository extends ServiceEntityRepository
 
         $this->entityManager->persist($category);
         $this->entityManager->flush();
+        $this->logger->info("Создана новая категория", ["category" => $category]);
         return $category;
     }
 
@@ -72,6 +82,7 @@ class CategoryRepository extends ServiceEntityRepository
 
         $this->entityManager->persist($category);
         $this->entityManager->flush();
+        $this->logger->info("Обновлена категория", ["category" => $category]);
         return $category;
     }
 
@@ -80,5 +91,6 @@ class CategoryRepository extends ServiceEntityRepository
         $category = $this->show($id);
         $this->entityManager->remove($category);
         $this->entityManager->flush();
+        $this->logger->info("Категория удалена", ["category" => $category]);
     }
 }

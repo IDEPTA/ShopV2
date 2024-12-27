@@ -8,21 +8,30 @@ use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
+use Monolog\Attribute\WithMonologChannel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Psr\Log\LoggerInterface;
 
 /**
  * @extends ServiceEntityRepository<Product>
  */
+#[WithMonologChannel('product')]
 class ProductRepository extends ServiceEntityRepository
 {
     private $validator;
     private $entityManager;
-    public function __construct(ManagerRegistry $registry, ValidatorInterface $validator, EntityManagerInterface $entityManager)
-    {
+    private $logger;
+    public function __construct(
+        ManagerRegistry $registry,
+        ValidatorInterface $validator,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ) {
         $this->validator = $validator;
         $this->entityManager = $entityManager;
+        $this->logger = $logger;
         parent::__construct($registry, Product::class);
     }
 
@@ -67,6 +76,7 @@ class ProductRepository extends ServiceEntityRepository
 
         $this->entityManager->persist($product);
         $this->entityManager->flush();
+        $this->logger->info("Создан новый продукт", ["product" => $product]);
         return $product;
     }
 
@@ -98,6 +108,7 @@ class ProductRepository extends ServiceEntityRepository
 
         $this->entityManager->persist($product);
         $this->entityManager->flush();
+        $this->logger->info("Продукт обновлен", ["product" => $product]);
         return $product;
     }
 
@@ -106,5 +117,6 @@ class ProductRepository extends ServiceEntityRepository
         $product = $this->show($id);
         $this->entityManager->remove($product);
         $this->entityManager->flush();
+        $this->logger->info("Продукт удален", ["product" => $product]);
     }
 }
