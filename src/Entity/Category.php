@@ -6,10 +6,12 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CategoryRepository;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[ApiResource]
+// #[ApiResource]
 class Category
 {
     #[ORM\Id]
@@ -17,6 +19,8 @@ class Category
     #[ORM\Column]
     private ?int $id = null;
 
+    #[NotBlank()]
+    #[Length(min: 3, max: 100, minMessage: "Название должно содержать минимум 3 символа")]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 

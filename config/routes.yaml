@@ -7,3 +7,8 @@ controllers:
 admin_dashboard:
     path: /admin
     controller: App\Controller\Admin\MainDashboardController::index
+
+api_auth_login:
+    path: /api/auth/login
+    controller: Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandler::handle
+    methods: [POST]

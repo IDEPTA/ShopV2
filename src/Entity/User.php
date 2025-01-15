@@ -6,6 +6,10 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -17,18 +21,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[NotBlank(message: "Это обязательное поле")]
+    #[Type(type: 'string', message: "Имя должно быть в строковом формате")]
+    #[Length(
+        min: 2,
+        max: 100,
+        minMessage: "Имя должно состоять минимум из 2 символов",
+        maxMessage: "Имя не должно превышать 100 символов"
+    )]
     #[ORM\Column(length: 180)]
     private ?string $name = null;
 
+    #[NotBlank(message: "Это обязательное поле")]
+    #[Type(type: 'string', message: "Имя должно быть в строковом формате")]
+    #[Length(
+        min: 2,
+        max: 100,
+        minMessage: "Фамилия должно состоять минимум из 2 символов",
+        maxMessage: "Фамилия не должно превышать 100 символов"
+    )]
     #[ORM\Column(length: 180)]
     private ?string $surname = null;
 
+    #[NotBlank(message: "Это обязательное поле")]
+    #[Type(type: 'string', message: "Имя должно быть в строковом формате")]
+    #[Length(
+        min: 3,
+        max: 100,
+        minMessage: "Отчество должно состоять минимум из 3 символов",
+        maxMessage: "Отчество не должно превышать 100 символов"
+    )]
     #[ORM\Column(length: 180)]
     private ?string $patronymic = null;
 
+    #[NotBlank(message: "Это обязательное поле")]
+    #[Email(message: "Укажите email адрес")]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
+    #[NotBlank(message: "Это обязательное поле")]
+    #[Type(type: 'numeric', message: "Номер телефона должен содержать только числа")]
     #[ORM\Column(length: 11)]
     private ?string $phone = null;
 

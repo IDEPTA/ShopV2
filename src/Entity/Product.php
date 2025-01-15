@@ -4,12 +4,14 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProductRepository;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+// #[ApiResource]
 class Product
 {
     #[ORM\Id]
@@ -17,24 +19,35 @@ class Product
     #[ORM\Column]
     private ?int $id = null;
 
+    #[NotBlank()]
+    #[Length(min: 3, max: 100, minMessage: "Название должно содержать минимум 3 символа")]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Length(max: 500, maxMessage: "Описание не должно превышать 500 символов")]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
+    #[NotBlank()]
+    #[Type(type: 'bool', message: "Доступность должна быть в формате true/false")]
     #[ORM\Column]
     private ?bool $availability = null;
 
+    #[NotBlank()]
+    #[Type(type: 'numeric', message: "Количество должно быть в числовом формате")]
     #[ORM\Column(type: Types::BIGINT)]
     private ?string $quantity = null;
 
+    #[NotBlank()]
+    #[Type(type: 'numeric', message: "Количество должно быть в числовом формате")]
     #[ORM\Column(type: Types::BIGINT)]
     private ?string $price = null;
 
+    #[Type(type: 'array')]
     #[ORM\Column(nullable: true)]
     private ?array $images = null;
 
+    #[NotBlank()]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Category $category = null;
