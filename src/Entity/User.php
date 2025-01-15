@@ -54,12 +54,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $patronymic = null;
 
-    #[NotBlank("Это обязательное поле")]
+    #[NotBlank(message: "Это обязательное поле")]
     #[Email(message: "Укажите email адрес")]
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[NotBlank("Это обязательное поле")]
+    #[NotBlank(message: "Это обязательное поле")]
     #[Type(type: 'numeric', message: "Номер телефона должен содержать только числа")]
     #[ORM\Column(length: 11)]
     private ?string $phone = null;
