@@ -64,11 +64,12 @@ class CategoryController extends AbstractController
     public function create(Request $request): Response
     {
         try {
-            $data = $this->categoryRepository->create($request);
+            $data = json_decode($request->getContent(), true);
+            $category = $this->categoryRepository->create($data);
             return $this->json([
                 "msg" => "Категория добавлена",
                 "success" => true,
-                "category" => $data
+                "category" => $category
             ]);
         } catch (\Throwable $e) {
             return $this->json([

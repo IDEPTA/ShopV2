@@ -41,10 +41,8 @@ class ReviewRepository extends ServiceEntityRepository
         return $review;
     }
 
-    public function create(Request $request)
+    public function create(array $data)
     {
-        $data = json_decode($request->getContent(), true);
-
         $product = $this->entityManager->getReference(Product::class, $data['product']);
         $user = $this->entityManager->getReference(User::class, $data['user']);
 

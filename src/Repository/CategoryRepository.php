@@ -49,10 +49,8 @@ class CategoryRepository extends ServiceEntityRepository
         return $category;
     }
 
-    public function create(Request $request)
+    public function create(array $data)
     {
-        $data = json_decode($request->getContent(), true);
-
         $category = new Category();
         $category->setName($data['name']);
         $errors = $this->validator->validate($category);
