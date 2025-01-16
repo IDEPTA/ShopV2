@@ -49,11 +49,10 @@ class ProductRepository extends ServiceEntityRepository
         return $product;
     }
 
-    public function create(Request $request)
+    public function create(array $data)
     {
-        $data = json_decode($request->getContent(), true);
-
         $category = $this->entityManager->getReference(Category::class, $data['category']);
+
         if (!$category) {
             throw new EntityNotFoundException("Категория с таким id не найдена", 404);
         }

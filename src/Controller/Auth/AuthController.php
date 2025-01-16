@@ -35,7 +35,8 @@ final class AuthController extends AbstractController
     public function registger(Request $request): Response
     {
         try {
-            $user = $this->userRepository->register($request);
+            $data = json_decode($request->getContent(), true);
+            $user = $this->userRepository->register($data);
             return $this->json([
                 "msg" => "Пользователь зарегестрирован",
                 "user" => $user,

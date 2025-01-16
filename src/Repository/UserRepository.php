@@ -51,10 +51,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    public function register(Request $request)
+    public function register(array $data)
     {
-        $data = json_decode($request->getContent(), true);
-
         $user = new User();
         $user->setName($data['name']);
         $user->setSurname($data['surname']);

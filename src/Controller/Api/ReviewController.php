@@ -64,7 +64,8 @@ class ReviewController extends AbstractController
     public function create(Request $request): Response
     {
         try {
-            $reviews = $this->reviewRepository->create($request);
+            $data = json_decode($request->getContent(), true);
+            $reviews = $this->reviewRepository->create($data);
             return $this->json([
                 "reviews" => $reviews,
                 "success" => true

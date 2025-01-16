@@ -64,7 +64,8 @@ class ProductsController extends AbstractController
     public function create(Request $request): Response
     {
         try {
-            $product = $this->productRepository->create($request);
+            $data = json_decode($request->getContent(), true);
+            $product = $this->productRepository->create($data);
             return $this->json([
                 "product" => $product,
                 "success" => true
