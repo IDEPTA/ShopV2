@@ -122,4 +122,26 @@ class ReviewController extends AbstractController
             ]);
         }
     }
+
+    #[Route(
+        path: '/api/review-for-user/{id}',
+        name: 'review-for-user',
+        methods: ['GET']
+    )]
+    public function getReviewForUser(int $id): Response
+    {
+        try {
+            $reviews = $this->reviewRepository->getReviewForUser($id);
+            return $this->json([
+                "reviews" => $reviews,
+                "success" => true
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                "msg" => $e->getMessage(),
+                "success" => false,
+                "code" => $e->getCode()
+            ]);
+        }
+    }
 }

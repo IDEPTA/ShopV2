@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use Exception;
+use App\Entity\Review;
 use App\Entity\Category;
+use App\Entity\Product;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
@@ -90,5 +92,38 @@ class CategoryRepository extends ServiceEntityRepository
         $this->entityManager->remove($category);
         $this->entityManager->flush();
         $this->logger->info("Категория удалена", ["category" => $category]);
+    }
+
+    public function getAvgPriceCategory(int $id)
+    {
+        $prices = $this->getEntityManager()
+            ->getRepository(Product::class)
+            ->createQueryBuilder('p')
+            ->select('p.price')
+            ->where('p.category = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getScalarResult();
+        $prices = array_map(fn($price) => $price['price'], $prices);
+        $price = round(array_sum($prices) / count($prices), 2);
+
+        return $price;
+    }
+
+    public function getAvgGradeCategory(int $id)
+    {
+        $grades = $this->getEntityManager()
+            ->getRepository(Review::class)
+            ->createQueryBuilder('r')
+            ->innerJoin('r.product', 'p')
+            ->select('r.grade')
+            ->where('p.category = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getScalarResult();
+        $grades = array_map(fn($grades) => $grades['grade'], $grades);
+        $grade = round(array_sum($grades) / count($grades), 2);
+
+        return $grade;
     }
 }

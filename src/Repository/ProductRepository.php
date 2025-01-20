@@ -5,6 +5,7 @@ namespace App\Repository;
 use Exception;
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\Review;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -117,5 +118,41 @@ class ProductRepository extends ServiceEntityRepository
         $this->entityManager->remove($product);
         $this->entityManager->flush();
         $this->logger->info("Продукт удален", ["product" => $product]);
+    }
+
+    public function getProductFromCategory(int $id)
+    {
+        $products = $this->createQueryBuilder("p")
+            ->where("p.category = :id")
+            ->setParameter("id", $id)
+            ->orderBy('p.category', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $products;
+    }
+
+    public function getReviewsFromProduct(int $id)
+    {
+        $repository = $this->entityManager->getRepository(Review::class);
+        $reviews = $repository->find($id);
+
+        return $reviews;
+    }
+
+    public function getGradeForProduct(int $id)
+    {
+        $grades = $this->getEntityManager()
+            ->getRepository(Review::class)
+            ->createQueryBuilder('r')
+            ->select('r.grade')
+            ->where('r.product = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->execute();
+        $grades = array_map(fn($grade) => $grade['grade'], $grades);
+        $product_grade = round(array_sum($grades) / count($grades), 2);
+
+        return $product_grade;
     }
 }

@@ -125,4 +125,48 @@ class CategoryController extends AbstractController
             ]);
         }
     }
+
+    #[Route(
+        path: '/api/avg_price_category/{id}',
+        name: 'avg_price_category',
+        methods: ['GET']
+    )]
+    public function getAvgPriceCategory(int $id)
+    {
+        try {
+            $avgPrice = $this->categoryRepository->getAvgPriceCategory($id);
+            return $this->json([
+                "avgPrice" => $avgPrice,
+                "succes" => true
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                "msg" => $e->getMessage(),
+                "success" => false,
+                "code" => $e->getCode()
+            ]);
+        }
+    }
+
+    #[Route(
+        path: '/api/avg_grade_category/{id}',
+        name: 'avg_grade_category',
+        methods: ['GET']
+    )]
+    public function getAvgGradeCategory(int $id)
+    {
+        try {
+            $avgGrade = $this->categoryRepository->getAvgGradeCategory($id);
+            return $this->json([
+                "avgGrade" => $avgGrade,
+                "succes" => true
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                "msg" => $e->getMessage(),
+                "success" => false,
+                "code" => $e->getCode()
+            ]);
+        }
+    }
 }
