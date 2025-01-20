@@ -104,4 +104,15 @@ class ReviewRepository extends ServiceEntityRepository
         $this->entityManager->remove($review);
         $this->entityManager->flush();
     }
+
+    public function getReviewForUser(int $id)
+    {
+        $reviews = $this->createQueryBuilder("r")
+            ->where("r.user=:id")
+            ->setParameter("id", $id)
+            ->getQuery()
+            ->getResult();
+
+        return $reviews;
+    }
 }

@@ -122,4 +122,70 @@ class ProductsController extends AbstractController
             ]);
         }
     }
+
+    #[Route(
+        path: '/api/products-category/{id}',
+        name: 'products-category',
+        methods: ['GET']
+    )]
+    public function getProductFromCategory(int $id)
+    {
+        try {
+            $products = $this->productRepository->getProductFromCategory($id);
+            return $this->json([
+                "products" => $products,
+                "success" => true
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                "msg" => $e->getMessage(),
+                "success" => false,
+                "code" => $e->getCode()
+            ]);
+        }
+    }
+
+    #[Route(
+        path: '/api/products-reviews/{id}',
+        name: 'products-review',
+        methods: ['GET']
+    )]
+    public function getReviewsFromProduct(int $id)
+    {
+        try {
+            $reviews = $this->productRepository->getReviewsFromProduct($id);
+            return $this->json([
+                "reviews" => $reviews,
+                "success" => true
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                "msg" => $e->getMessage(),
+                "success" => false,
+                "code" => $e->getCode()
+            ]);
+        }
+    }
+
+    #[Route(
+        path: '/api/grade-product/{id}',
+        name: 'grade-product',
+        methods: ['GET']
+    )]
+    public function getGradeForProduct(int $id)
+    {
+        try {
+            $grade = $this->productRepository->getGradeForProduct($id);
+            return $this->json([
+                "grade" => $grade,
+                "success" => true
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                "msg" => $e->getMessage(),
+                "success" => false,
+                "code" => $e->getCode()
+            ]);
+        }
+    }
 }
